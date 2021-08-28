@@ -33,7 +33,7 @@ app.post('/projects',(req,res) =>{
     //requer o corpo do objeto
     const {title,owner} =req.body
     //cria um projeto com titulo com criador, um id único
-    const project = {id:uuid(),title,owner}
+    const project = {id: uuid(), title, owner}
     
      projects.push(project)
 
@@ -43,26 +43,37 @@ app.post('/projects',(req,res) =>{
 
 app.put('/projects/:id',(req  ,res) =>{
     const {id} = req.params
-    const projectIndex = projects.findIndex(project=>project.id==id)
-    if(projectIndex<0){
+    const {title, owner} = req.body
+    //encontra a posição do id no array
+    const projectIndex = projects.findIndex(project => project.id == id)
+    console.log('Este eh o array',projectIndex)
+    if( projectIndex < 0 ){
         return res.status(400).json({error:"Project Not Found!"})
     }
-    
-    //pega o param e seu velue como um json
+        const project = {
+            id,
+            title,
+            owner
+        }
+         projects[projectIndex] =  project
 
-    
-//tras apenas o value não identifica o param
-    console.log(id)
-    return res.json(
-        ['project4','project2','project3']
-        )
-        
+
+    return res.json(project) 
 })
+
+
 app.delete('/projects/:id',(req,res) =>{
-    return res.json(
-        ['project2','project3']
-        )
-        
+    const {id} = req.params
+    //encontra a posição do id no array
+    const projectIndex = projects.findIndex(project => project.id == id)
+    console.log('Este eh o array',projectIndex)
+    if( projectIndex < 0 ){
+        return res.status(400).json({error:"Project Not Found!"})
+    }
+
+    projects.splice(projectIndex, 0)
+
+    return res.status(204).send()
 })
 app.listen(3333, ()=>{
     console.log('Back Run')
