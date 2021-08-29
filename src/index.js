@@ -1,6 +1,6 @@
 const { request } = require('express')
 const express = require('express')
-const {uuid} = require('uuidv4')
+const {uuid, isUuid} = require('uuidv4')
 
 const app= express()
 
@@ -19,6 +19,26 @@ const
 
 const projects = []
 
+function logRequest(req,res,next){
+    const{method,url}= req
+
+    const logLabel =`[${method.toUpperCase() }] ${url}`
+    console.log(logLabel)
+
+    return next()
+
+}
+app.use(logRequest)
+app.use('/projects/:id',validadeProjectId)
+
+function validadeProjectId (req, res,next){
+    const {id}= req.params
+
+    if(!isUuid(id)){
+        return res.status(400).json({error: 'Invalid Project ID'})
+    }
+   return next()
+}
 
 app.get('/projects',(req,res) =>{
 
@@ -41,7 +61,7 @@ app.post('/projects',(req,res) =>{
         
 })
 
-app.put('/projects/:id',(req  ,res) =>{
+app.put('/projects/:id',validadeProjectId,(req  ,res) =>{
     const {id} = req.params
     const {title, owner} = req.body
     //encontra a posição do id no array
@@ -62,7 +82,7 @@ app.put('/projects/:id',(req  ,res) =>{
 })
 
 
-app.delete('/projects/:id',(req,res) =>{
+app.delete('/projects/:id',validadeProjectId,(req,res) =>{
     const {id} = req.params
     //encontra a posição do id no array
     const projectIndex = projects.findIndex(project => project.id == id)
