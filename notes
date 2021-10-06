@@ -1,0 +1,4 @@
+primeiro yarn init -y 
+yarn add react and react-dom
+
+babel --> serve para transpilar o codigo de react para um codigo html dentro de js para o browser entender 
